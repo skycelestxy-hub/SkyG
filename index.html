@@ -305,22 +305,7 @@
 
   .modal-actions { display: flex; gap: 12px; }
 
-  /* ── CROSSHAIR (locked indicator) ── */
-  #crosshair {
-    display: none;
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: 60;
-  }
-  #crosshair.show { display: block; }
-  #crosshair::before, #crosshair::after {
-    content: '';
-    position: absolute;
-    background: rgba(255,61,110,.25);
-  }
-  #crosshair::before { left: 50%; top: 0; width: 1px; height: 100%; transform: translateX(-50%); }
-  #crosshair::after  { top: 50%; left: 0; height: 1px; width: 100%; transform: translateY(-50%); }
+  /* crosshair removido */
 
   /* ── TOAST ── */
   #toast {
@@ -439,8 +424,7 @@
   </div>
 </div>
 
-<!-- CROSSHAIR -->
-<div id="crosshair"></div>
+<!-- crosshair removido -->
 
 <!-- TOAST -->
 <div id="toast" id="toast"></div>
@@ -576,11 +560,20 @@ canvasWrap.addEventListener('touchend', () => { touchStart = null; });
 
 // ── SCROLL TO ZOOM ──
 canvasWrap.addEventListener('wheel', e => {
-  if (state.locked) return;
   e.preventDefault();
+  if (state.locked) return;
   const delta = e.deltaY > 0 ? -0.1 : 0.1;
   state.scale = Math.min(state.maxScale, Math.max(state.minScale, state.scale + delta));
   applyTransform();
+}, { passive: false });
+
+// Bloquear scroll do site inteiro quando travado
+window.addEventListener('wheel', e => {
+  if (state.locked) e.preventDefault();
+}, { passive: false });
+
+window.addEventListener('touchmove', e => {
+  if (state.locked) e.preventDefault();
 }, { passive: false });
 
 // ── ZOOM MODAL ──
@@ -629,19 +622,27 @@ function updateLockUI(locked) {
   state.locked = locked;
   if (locked) {
     lockBtn.style.display = 'none';
-    unlockBtn.style.display = '';
+    unlockBtn.style.display = 'inline-block';
     lockBadge.textContent = 'TRAVADO';
     lockBadge.classList.add('is-locked');
     canvasWrap.classList.add('locked-cursor');
-    crosshair.classList.add('show');
+    // Travar o site inteiro
+    document.body.style.overflow = 'hidden';
+    document.body.style.touchAction = 'none';
+    document.documentElement.style.overflow = 'hidden';
+    document.documentElement.style.touchAction = 'none';
   } else {
     lockBtn.style.display = 'inline-block';
     unlockBtn.style.display = 'none';
     lockBadge.textContent = 'LIVRE';
     lockBadge.classList.remove('is-locked');
     canvasWrap.classList.remove('locked-cursor');
-    crosshair.classList.remove('show');
     state.unlockClicks = 0;
+    // Destravar o site
+    document.body.style.overflow = '';
+    document.body.style.touchAction = '';
+    document.documentElement.style.overflow = '';
+    document.documentElement.style.touchAction = '';
   }
 }
 

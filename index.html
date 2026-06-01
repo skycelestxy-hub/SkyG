@@ -24,7 +24,7 @@
     background: var(--bg);
     color: var(--text);
     font-family: 'Space Mono', monospace;
-    min-height: 100vh;
+    height: 100dvh;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -125,6 +125,7 @@
     flex-direction: column;
     width: 100%;
     overflow: hidden;
+    min-height: 0;
   }
   #viewer-screen.active { display: flex; }
 
@@ -135,6 +136,8 @@
     overflow: hidden;
     background: #050508;
     cursor: grab;
+    width: 100%;
+    min-height: 0;
   }
   #canvas-wrap.grabbing { cursor: grabbing; }
   #canvas-wrap.locked-cursor { cursor: not-allowed; }
@@ -155,29 +158,39 @@
   #toolbar {
     background: var(--surface);
     border-top: 1px solid var(--border);
-    padding: 14px 24px;
+    padding: 10px 12px;
     display: flex;
-    align-items: center;
-    gap: 16px;
-    flex-wrap: wrap;
-    justify-content: center;
+    flex-direction: column;
+    gap: 8px;
     position: relative;
     z-index: 50;
+    flex-shrink: 0;
+  }
+
+  .toolbar-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: nowrap;
+    width: 100%;
   }
 
   #toolbar .sep {
     width: 1px;
-    height: 28px;
+    height: 24px;
     background: var(--border);
+    flex-shrink: 0;
   }
 
   /* zoom pill */
   .zoom-display {
-    font-size: .7rem;
+    font-size: .65rem;
     color: var(--muted);
     letter-spacing: 1px;
-    min-width: 58px;
+    min-width: 48px;
     text-align: center;
+    flex-shrink: 0;
   }
   .zoom-display span { color: var(--accent); font-weight: 700; }
 
@@ -186,27 +199,29 @@
     background: rgba(0,0,0,.4);
     border: 1px solid var(--border);
     border-radius: 4px;
-    padding: 6px 12px;
-    font-size: .65rem;
+    padding: 5px 8px;
+    font-size: .6rem;
     letter-spacing: 1px;
     text-align: center;
-    min-width: 100px;
+    flex: 1;
+    min-width: 0;
   }
-  .dist-box .label { color: var(--muted); margin-bottom: 2px; }
-  .dist-box .val { color: var(--accent); font-weight: 700; font-size: .8rem; }
+  .dist-box .label { color: var(--muted); margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .dist-box .val { color: var(--accent); font-weight: 700; font-size: .75rem; }
   .dist-box.lock-val .val { color: var(--locked); }
 
   /* lock status badge */
   #lock-badge {
-    font-size: .65rem;
+    font-size: .6rem;
     letter-spacing: 2px;
     text-transform: uppercase;
-    padding: 5px 12px;
+    padding: 4px 10px;
     border-radius: 3px;
     background: rgba(0,229,255,.08);
     border: 1px solid var(--accent);
     color: var(--accent);
     transition: all .2s;
+    flex-shrink: 0;
   }
   #lock-badge.is-locked {
     background: rgba(255,61,110,.15);
@@ -217,6 +232,11 @@
   @keyframes pulse-badge {
     from { box-shadow: 0 0 0 rgba(255,61,110,0); }
     to   { box-shadow: 0 0 12px rgba(255,61,110,.5); }
+  }
+
+  .btn {
+    white-space: nowrap;
+    flex-shrink: 0;
   }
 
   /* ── MODAL / INFO OVERLAY ── */
@@ -370,31 +390,29 @@
   </div>
 
   <div id="toolbar">
-    <!-- zoom info -->
-    <div class="dist-box">
-      <div class="label">Distância mín.</div>
-      <div class="val" id="min-display">—</div>
+    <!-- Linha 1: info de zoom -->
+    <div class="toolbar-row">
+      <div class="dist-box">
+        <div class="label">Mín.</div>
+        <div class="val" id="min-display">0.5×</div>
+      </div>
+      <div class="dist-box lock-val">
+        <div class="label">Máx.</div>
+        <div class="val" id="max-display">5.0×</div>
+      </div>
+      <div class="sep"></div>
+      <div class="zoom-display">Zoom<br><span id="zoom-label">1.0×</span></div>
+      <div class="sep"></div>
+      <div id="lock-badge">LIVRE</div>
     </div>
-    <div class="dist-box lock-val">
-      <div class="label">Distância máx.</div>
-      <div class="val" id="max-display">—</div>
+
+    <!-- Linha 2: botões -->
+    <div class="toolbar-row">
+      <button class="btn" id="open-zoom-modal-btn">⊕ Zoom</button>
+      <button class="btn danger" id="lock-btn" style="display:inline-block">⊘ Travar</button>
+      <button class="btn" id="unlock-btn" style="display:none">↺ Destravar (2×)</button>
+      <button class="btn" id="change-img-btn" style="opacity:.6;font-size:.65rem">↩ Foto</button>
     </div>
-
-    <div class="sep"></div>
-
-    <div class="zoom-display">Zoom<br><span id="zoom-label">1.0×</span></div>
-
-    <div class="sep"></div>
-
-    <!-- buttons -->
-    <button class="btn" id="open-zoom-modal-btn">⊕ Zoom</button>
-    <button class="btn danger" id="lock-btn">⊘ Travar</button>
-    <button class="btn" id="unlock-btn" style="display:none">↺ Destravar</button>
-    <button class="btn" id="change-img-btn" style="opacity:.6;font-size:.65rem">Trocar Foto</button>
-
-    <div class="sep"></div>
-
-    <div id="lock-badge">LIVRE</div>
   </div>
 </div>
 
@@ -617,7 +635,7 @@ function updateLockUI(locked) {
     canvasWrap.classList.add('locked-cursor');
     crosshair.classList.add('show');
   } else {
-    lockBtn.style.display = '';
+    lockBtn.style.display = 'inline-block';
     unlockBtn.style.display = 'none';
     lockBadge.textContent = 'LIVRE';
     lockBadge.classList.remove('is-locked');

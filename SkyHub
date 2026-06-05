@@ -499,7 +499,7 @@ end)
 -- KEY GATE — CONFIGURAÇÃO
 -- ================================================================
 -- ⚠️ SUBSTITUA pela URL do seu Cloudflare Worker
-local KEY_VALIDATION_URL = "https://skyhub-keys.SEU_USUARIO.workers.dev"
+local KEY_VALIDATION_URL = "https://skyhub-keys.skycelestxy.workers.dev/"
 
 local function validarKey(key)
     -- Valida formato: SKYHub + 7 chars alfanuméricos maiúsculos + V

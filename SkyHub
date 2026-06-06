@@ -1,4 +1,4 @@
---[[
+-[[
     SKY HUB V3.0 — PARTE 1/4 ATUALIZADA
     ✅ Key Gate integrado (para em 50%, exige key válida)
     ✅ Validação via GitHub (Cloudflare Worker)
@@ -502,27 +502,57 @@ end)
 local KEY_VALIDATION_URL = "https://skyhub-keys.skycelestxy.workers.dev/"
 
 local function validarKey(key)
-    -- Valida formato: SKYHub + 7 chars alfanuméricos maiúsculos + V
     if #key ~= 14 then return false, "Formato inválido (14 chars)" end
     if not key:match("^SKYHub[A-Z0-9][A-Z0-9][A-Z0-9][A-Z0-9][A-Z0-9][A-Z0-9][A-Z0-9]V$") then
         return false, "Formato incorreto"
     end
 
-    local ok, result = pcall(function()
-        return HttpService:GetAsync(KEY_VALIDATION_URL, true)
+    -- Tenta request() (Synapse X, KRNL, Fluxus, etc.)
+    local response, body
+    local ok = pcall(function()
+        response = request({
+            Url    = KEY_VALIDATION_URL,
+            Method = "GET",
+        })
+        body = response.Body
     end)
-    if not ok then return false, "Sem conexão com servidor" end
+
+    -- Fallback: http.request() (alguns executores)
+    if not ok or not body then
+        ok = pcall(function()
+            response = http.request({
+                Url    = KEY_VALIDATION_URL,
+                Method = "GET",
+            })
+            body = response.Body
+        end)
+    end
+
+    -- Fallback: syn.request() (Synapse legado)
+    if not ok or not body then
+        ok = pcall(function()
+            response = syn.request({
+                Url    = KEY_VALIDATION_URL,
+                Method = "GET",
+            })
+            body = response.Body
+        end)
+    end
+
+    if not ok or not body or body == "" then
+        return false, "Sem conexão com servidor"
+    end
 
     local decoded
-    local ok2 = pcall(function() decoded = HttpService:JSONDecode(result) end)
+    local ok2 = pcall(function() decoded = HttpService:JSONDecode(body) end)
     if not ok2 or not decoded then return false, "Erro ao ler dados" end
 
     local keyData = decoded.keys and decoded.keys[key]
     if not keyData then return false, "Key não encontrada" end
-    if keyData.status == "expirada"  then return false, "Key expirada"  end
-    if keyData.status == "deletada"  then return false, "Key removida"  end
-    if keyData.status ~= "ativa"     then return false, "Key inválida"  end
-    if keyData.online == true        then return false, "Key já em uso em outro dispositivo" end
+    if keyData.status == "expirada" then return false, "Key expirada"  end
+    if keyData.status == "deletada" then return false, "Key removida"  end
+    if keyData.status ~= "ativa"    then return false, "Key inválida"  end
+    if keyData.online == true       then return false, "Key já em uso em outro dispositivo" end
 
     return true, "OK"
 end

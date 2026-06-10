@@ -473,7 +473,7 @@ end
 
 local function criarKeyGate(barFill, pctLbl, statusLbl, onSuccess)
     local keyGui = Instance.new("ScreenGui")
-    keyGui.Name="SKY_KEYGATE"; keyGui.ResetOnSpawn=false; keyGui.DisplayOrder=998
+    keyGui.Name="SKY_KEYGATE"; keyGui.ResetOnSpawn=false; keyGui.DisplayOrder=99
     keyGui.IgnoreGuiInset=true; keyGui.Parent=GP()
 
     local overlay = Instance.new("Frame", keyGui)

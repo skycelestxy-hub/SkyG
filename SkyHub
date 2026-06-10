@@ -473,7 +473,7 @@ end
 
 local function criarKeyGate(barFill, pctLbl, statusLbl, onSuccess)
     local keyGui = Instance.new("ScreenGui")
-    keyGui.Name="SKY_KEYGATE"; keyGui.ResetOnSpawn=false; keyGui.DisplayOrder=1001
+    keyGui.Name="SKY_KEYGATE"; keyGui.ResetOnSpawn=false; keyGui.DisplayOrder=999
     keyGui.IgnoreGuiInset=true; keyGui.Parent=GP()
 
     local overlay = Instance.new("Frame", keyGui)
@@ -628,7 +628,7 @@ end
 local function createWelcomeScreen()
     local welcomeGui = Instance.new("ScreenGui")
     welcomeGui.Name="SKY_WELCOME"; welcomeGui.ResetOnSpawn=false
-    welcomeGui.DisplayOrder=999; welcomeGui.IgnoreGuiInset=true; welcomeGui.Parent=GP()
+    welcomeGui.DisplayOrder=900; welcomeGui.IgnoreGuiInset=true; welcomeGui.Parent=GP()
 
     local bg = Instance.new("Frame", welcomeGui)
     bg.Size=UDim2.new(1,0,1,0); bg.BackgroundColor3=Color3.fromRGB(0,0,0)

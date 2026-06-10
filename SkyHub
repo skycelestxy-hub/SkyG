@@ -696,82 +696,10 @@ local function createWelcomeScreen()
     panelGlow.BackgroundColor3=Color3.fromRGB(50,20,120); panelGlow.BackgroundTransparency=0.75
     panelGlow.BorderSizePixel=0; panelGlow.ZIndex=9; corner(panelGlow,28)
 
-    local logoS=Instance.new("TextLabel",panelGui)
+  local logoS=Instance.new("TextLabel",panelGui)
     logoS.Size=UDim2.new(0,110,0,110); logoS.Position=UDim2.new(0.5,-55,0,35)
     logoS.BackgroundTransparency=1; logoS.Text="S"; logoS.Font=Enum.Font.GothamBlack
     logoS.TextSize=92; logoS.TextColor3=Color3.fromRGB(255,255,255); logoS.ZIndex=14
-
-    -- ===== ÓRBITAS AO REDOR DO S =====
-    local S_CX = 310  -- centro do S no eixo X dentro de panelGui
-    local S_CY = 90   -- centro do S no eixo Y dentro de panelGui
-
-    local orbitConfig = {
-        {radius=58,  speed=2.2,  color=Color3.fromRGB(100,200,255), size=8,  startAngle=0,   ringAlpha=0.80},
-        {radius=78,  speed=1.0,  color=Color3.fromRGB(255,90,200),  size=6,  startAngle=130, ringAlpha=0.83},
-        {radius=100, speed=0.55, color=Color3.fromRGB(255,210,70),  size=10, startAngle=255, ringAlpha=0.86},
-    }
-
-    -- Cria os anéis de órbita (atrás do S — ZIndex 11/12)
-    for _, oc in ipairs(orbitConfig) do
-        local ring = Instance.new("Frame", panelGui)
-        ring.Size = UDim2.new(0, oc.radius*2, 0, oc.radius*2)
-        ring.Position = UDim2.new(0, S_CX-oc.radius, 0, S_CY-oc.radius)
-        ring.BackgroundTransparency = 1
-        ring.BorderSizePixel = 0
-        ring.ZIndex = 12
-        local rCorner = Instance.new("UICorner", ring)
-        rCorner.CornerRadius = UDim.new(0, oc.radius+1)
-        local rStroke = Instance.new("UIStroke", ring)
-        rStroke.Thickness = 1
-        rStroke.Color = oc.color
-        rStroke.Transparency = oc.ringAlpha
-        rStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-    end
-
-    -- Cria os planetas (na frente do S — ZIndex 15)
-    local orbitPlanets = {}
-    for _, oc in ipairs(orbitConfig) do
-        local dot = Instance.new("Frame", panelGui)
-        dot.Size = UDim2.new(0, oc.size, 0, oc.size)
-        dot.BackgroundColor3 = oc.color
-        dot.BorderSizePixel = 0
-        dot.ZIndex = 15
-        local dc = Instance.new("UICorner", dot)
-        dc.CornerRadius = UDim.new(0, oc.size)
-        local ds = Instance.new("UIStroke", dot)
-        ds.Thickness = 2
-        ds.Color = Color3.new(1,1,1)
-        ds.Transparency = 0.45
-        ds.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-        -- Pulso de brilho individual por planeta
-        local delay = oc.startAngle / 200
-        task.spawn(function()
-            task.wait(delay)
-            while dot.Parent do
-                TW(dot, 0.9, {BackgroundTransparency=0.35}); task.wait(0.9)
-                TW(dot, 0.9, {BackgroundTransparency=0});    task.wait(0.9)
-            end
-        end)
-        table.insert(orbitPlanets, {
-            dot=dot, radius=oc.radius, speed=oc.speed,
-            angle=oc.startAngle, size=oc.size
-        })
-    end
-
-    -- Loop de animação das órbitas
-    task.spawn(function()
-        while panelGui.Parent do
-            for _, p in ipairs(orbitPlanets) do
-                p.angle = p.angle + p.speed * 1.6
-                local rad = math.rad(p.angle)
-                local ox = S_CX + math.cos(rad) * p.radius - p.size * 0.5
-                local oy = S_CY + math.sin(rad) * p.radius - p.size * 0.5
-                p.dot.Position = UDim2.new(0, ox, 0, oy)
-            end
-            task.wait(0.03)
-        end
-    end)
-    -- ===== FIM DAS ÓRBITAS =====
 
     local letters={"S","K","Y"," ","H","U","B"}; local letterObjs={}
     local lw=74; local totalW=#letters*lw

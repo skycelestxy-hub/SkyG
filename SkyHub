@@ -473,7 +473,7 @@ end
 
 local function criarKeyGate(barFill, pctLbl, statusLbl, onSuccess)
     local keyGui = Instance.new("ScreenGui")
-    keyGui.Name="SKY_KEYGATE"; keyGui.ResetOnSpawn=false; keyGui.DisplayOrder=999
+    keyGui.Name="SKY_KEYGATE"; keyGui.ResetOnSpawn=false; keyGui.DisplayOrder=990
     keyGui.IgnoreGuiInset=true; keyGui.Parent=GP()
 
     local overlay = Instance.new("Frame", keyGui)
@@ -628,7 +628,7 @@ end
 local function createWelcomeScreen()
     local welcomeGui = Instance.new("ScreenGui")
     welcomeGui.Name="SKY_WELCOME"; welcomeGui.ResetOnSpawn=false
-    welcomeGui.DisplayOrder=900; welcomeGui.IgnoreGuiInset=true; welcomeGui.Parent=GP()
+    welcomeGui.DisplayOrder=990; welcomeGui.IgnoreGuiInset=true; welcomeGui.Parent=GP()
 
     local bg = Instance.new("Frame", welcomeGui)
     bg.Size=UDim2.new(1,0,1,0); bg.BackgroundColor3=Color3.fromRGB(0,0,0)
@@ -696,7 +696,7 @@ local function createWelcomeScreen()
     panelGlow.BackgroundColor3=Color3.fromRGB(50,20,120); panelGlow.BackgroundTransparency=0.75
     panelGlow.BorderSizePixel=0; panelGlow.ZIndex=9; corner(panelGlow,28)
 
-  local logoS=Instance.new("TextLabel",panelGui)
+    local logoS=Instance.new("TextLabel",panelGui)
     logoS.Size=UDim2.new(0,110,0,110); logoS.Position=UDim2.new(0.5,-55,0,35)
     logoS.BackgroundTransparency=1; logoS.Text="S"; logoS.Font=Enum.Font.GothamBlack
     logoS.TextSize=92; logoS.TextColor3=Color3.fromRGB(255,255,255); logoS.ZIndex=14

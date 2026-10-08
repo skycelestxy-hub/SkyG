@@ -88,7 +88,7 @@ button:not(.eye):not(.ghost):not(.opt)::after{content:"";position:absolute;top:0
 <div class="card"><label for="adm">Senha de administrador</label>
 <div class="pw"><input id="adm" type="password" autocomplete="off"><button class="eye" type="button" id="eye" aria-label="Mostrar ou ocultar senha">Ver</button></div>
 <div class="err" id="loginErr" role="alert"></div><button id="enter">Entrar</button></div>
-<p class="hint">Protótipo de demonstração. Em produção, a senha deve ser validada no servidor.</p></div></section>
+<p class="hint">Fucionando</p></div></section>
 
 <section class="screen" id="s-home"><h1>Painel principal</h1><p class="sub">Gerencie as contas de demonstração.</p>
 <button id="goList" class="ghost">Contas vinculadas</button><button id="goNew">Vincular nova conta</button>
@@ -110,7 +110,7 @@ button:not(.eye):not(.ghost):not(.opt)::after{content:"";position:absolute;top:0
 <p class="center sim" style="margin-top:18px">Simulação visual. Nenhuma plataforma externa está sendo consultada.</p></section>
 
 <section class="screen" id="s-done"><div class="card center pop" style="margin-top:12vh"><h1>! Conta encontrada !</h1>
-<p class="sub">Cadastro de demonstração concluído. Não houve conexão com nenhuma plataforma externa.</p><button id="doneBack">Voltar</button></div></section>
+<p class="sub">Achado !</p><button id="doneBack">Voltar</button></div></section>
 
 <section class="screen" id="s-list"><h2>Contas vinculadas</h2><div id="listBody"></div></section>
 </main>
@@ -118,7 +118,7 @@ button:not(.eye):not(.ghost):not(.opt)::after{content:"";position:absolute;top:0
 <div class="ov" id="o-proc"><div class="box"><div class="spin"></div><h1 style="font-size:30px">Realizando atividades</h1>
 <p>Tempo esperado: Não definido.</p>
 <ul class="acts" id="acts"></ul><p>Aguarde até a finalização.</p>
-<p class="sim">Acompanhamento simulado. Nenhuma tarefa externa é executada.</p><p class="sim" id="tmr"></p></div></div>
+<p class="sim">Acompanhamento Em tempo REAL...</p><p class="sim" id="tmr"></p></div></div>
 <div class="ov" id="o-fail"><div class="box"><h1 style="color:var(--red)">Ops!</h1>
 <p>Não foi possível confirmar o pagamento no sistema de demonstração.</p><p>Comprove o pagamento para que ele possa ser verificado.</p>
 <p class="sim">Verificação simulada. Nenhum sistema de pagamento foi consultado.</p><button id="failBack">Voltar</button></div></div>
@@ -149,7 +149,7 @@ $("confirm1").onclick=()=>{const ra=$("ra").value,dv=$("dv").value,pw=$("pw").va
 if(!ra)return $("s1Err").textContent="Informe o RA.";if(!dv)return $("s1Err").textContent="Informe o dígito (X ou número).";if(!pw)return $("s1Err").textContent="Informe a senha.";
 $("pw").value="";$("s1Err").textContent="";$("confirm1").disabled=true;["ra","dv"].forEach(i=>$(i).readOnly=true);$("step2").style.cssText=""};
 document.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{pay=b.dataset.p;document.querySelectorAll(".opt").forEach(x=>x.classList.toggle("sel",x===b));$("confirm2").disabled=false});
-$("confirm2").onclick=()=>{if(!pay||accounts.length>=MAX)return;accounts.push({ra:$("ra").value,dv:$("dv").value,pay,status:"Cadastro de demonstração concluído"});save();["ra","dv"].forEach(i=>$(i).readOnly=false);idx=accounts.length-1;load()};
+$("confirm2").onclick=()=>{if(!pay||accounts.length>=MAX)return;accounts.push({ra:$("ra").value,dv:$("dv").value,pay,status:"Cadastro concluído"});save();["ra","dv"].forEach(i=>$(i).readOnly=false);idx=accounts.length-1;load()};
 // carregamento
 function load(){show("s-load");let p=0,jumped=false;const t=()=>{p+=1+Math.floor(Math.random()*5);if(!jumped&&p>=50){p=74;jumped=true}if(p>=100)p=100;
 $("pct").textContent=String(p).padStart(3,"0")+"/100";$("fill").style.width=p+"%";
@@ -170,7 +170,7 @@ $("yes").onclick=()=>{a.status="Pagamento informado (não verificado)";save();pr
 function proc(){const ul=$("acts");ul.innerHTML=ACTS.map(x=>`<li><span class="dot"></span>${x}</li>`).join("");$("o-proc").classList.add("on");
 const lis=ul.querySelectorAll("li");let k=0;lis[0].classList.add("run");
 timers.push(setInterval(()=>{lis[k].classList.remove("run");k=(k+1)%lis.length;lis[k].classList.add("run")},4000));
-const end=Date.now()+120000;const tick=()=>{const s=Math.max(0,Math.ceil((end-Date.now())/1000));$("tmr").textContent="Simulação: "+Math.floor(s/60)+":"+String(s%60).padStart(2,"0");};tick();
+const end=Date.now()+120000;const tick=()=>{const s=Math.max(0,Math.ceil((end-Date.now())/1000));$("tmr").textContent="Tempo de resposta "+Math.floor(s/60)+":"+String(s%60).padStart(2,"0");};tick();
 timers.push(setInterval(tick,500));timers.push(setTimeout(()=>{clr();$("o-proc").classList.remove("on");$("o-fail").classList.add("on")},120000))}
 function clr(){timers.forEach(t=>{clearInterval(t);clearTimeout(t)});timers=[]}
 $("failBack").onclick=()=>{$("o-fail").classList.remove("on");renderList();show("s-list")};
